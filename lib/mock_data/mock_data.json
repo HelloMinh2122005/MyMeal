@@ -1,0 +1,175 @@
+{
+    "meal_types": [
+        {
+            "id": 1,
+            "name": "Sáng"
+        },
+        {
+            "id": 2,
+            "name": "Trưa"
+        },
+        {
+            "id": 3,
+            "name": "Chiều"
+        },
+        {
+            "id": 4,
+            "name": "Tối"
+        },
+        {
+            "id": 5,
+            "name": "Ăn vặt"
+        }
+    ],
+    "foods": [
+        {
+            "id": 1,
+            "name": "Phở bò",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 2,
+            "name": "Phở gà",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 3,
+            "name": "Bún bò Huế",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 2,
+            "meal_type_name": "Trưa"
+        },
+        {
+            "id": 4,
+            "name": "Bún chả Hà Nội",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 2,
+            "meal_type_name": "Trưa"
+        },
+        {
+            "id": 5,
+            "name": "Cơm tấm sườn",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 2,
+            "meal_type_name": "Trưa"
+        },
+        {
+            "id": 6,
+            "name": "Cơm gà Hội An",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 2,
+            "meal_type_name": "Trưa"
+        },
+        {
+            "id": 7,
+            "name": "Bánh mì thịt nướng",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 8,
+            "name": "Bánh mì pate",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 9,
+            "name": "Bún riêu cua",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 10,
+            "name": "Bún đậu mắm tôm",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 4,
+            "meal_type_name": "Tối"
+        },
+        {
+            "id": 11,
+            "name": "Mì Quảng",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 2,
+            "meal_type_name": "Trưa"
+        },
+        {
+            "id": 12,
+            "name": "Xôi xéo",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 13,
+            "name": "Xôi gà",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 1,
+            "meal_type_name": "Sáng"
+        },
+        {
+            "id": 14,
+            "name": "Chè bưởi",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 3,
+            "meal_type_name": "Chiều"
+        },
+        {
+            "id": 15,
+            "name": "Chè thái",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 3,
+            "meal_type_name": "Chiều"
+        },
+        {
+            "id": 16,
+            "name": "Nem rán Hà Nội",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 4,
+            "meal_type_name": "Tối"
+        },
+        {
+            "id": 17,
+            "name": "Nem nướng Nha Trang",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 4,
+            "meal_type_name": "Tối"
+        },
+        {
+            "id": 18,
+            "name": "Cơm rang dưa bò",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "category_id": 2,
+            "category_name": "Cơm",
+            "meal_type_id": 4,
+            "meal_type_name": "Tối"
+        },
+        {
+            "id": 19,
+            "name": "Phở cuốn",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 3,
+            "meal_type_name": "Chiều"
+        },
+        {
+            "id": 20,
+            "name": "Bún thịt nướng",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 2,
+            "meal_type_name": "Trưa"
+        },
+        {
+            "id": 21,
+            "name": "Bánh tráng trộn",
+            "image_url": "https://res.cloudinary.com/dzpv3mfjt/image/upload/v1768055497/food_default_gxc3em.jpg",
+            "meal_type_id": 5,
+            "meal_type_name": "Ăn vặt"
+        }
+    ]
+}
