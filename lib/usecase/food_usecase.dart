@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-
+import '../models/food_details_model.dart';
 import '../models/food_model_item.dart';
 
 class FoodUsecase {
@@ -31,8 +31,8 @@ class FoodUsecase {
     return foodItems;
   }
 
-  Future<FoodModelItem> fetchFoodItemById(int id) async {
-    FoodModelItem foodItem;
+  Future<FoodDetailsModel> fetchFoodItemById(int id) async {
+    FoodDetailsModel foodItem;
     final String response = await rootBundle.loadString(
       'assets/mock_data.json',
     );
@@ -42,7 +42,7 @@ class FoodUsecase {
       orElse: () => null,
     );
     if (item != null) {
-      foodItem = FoodModelItem.fromJson(item);
+      foodItem = FoodDetailsModel.fromJson(item);
     } else {
       throw Exception('Food item not found');
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/models/food_details_model.dart';
 import 'package:my_flutter_app/models/type_model.dart';
 import '../../../../models/food_model_item.dart';
 import '../../../../usecase/food_usecase.dart';
@@ -48,6 +49,16 @@ class MenuProvider extends ChangeNotifier {
     }
   }
 
+  Future<FoodDetailsModel?> fetchFoodItemById(int id) async {
+    try {
+      return await _foodUsecase.fetchFoodItemById(id);
+    } catch (e) {
+      _errorMessage = 'Failed to get food item: $e';
+      notifyListeners();
+      return null;
+    }
+  }
+
   Future<void> fetchFoods(int? typeId, String? keyword) async {
     _isLoading = true;
     _errorMessage = null;
@@ -77,6 +88,16 @@ class MenuProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<TypeModel?> getTypeById(int id) async {
+    try {
+      return _typeUsecase.fetchTypeById(id);
+    } catch (e) {
+      _errorMessage = 'Type not found: $e';
+      notifyListeners();
+      return null;
     }
   }
 
