@@ -13,12 +13,14 @@ class MenuProvider extends ChangeNotifier {
   List<TypeModel> _types = [];
   bool _isLoading = false;
   String? _errorMessage;
+  int? _selectedTypeId;
 
   // Getter for UI
   List<FoodModelItem> get foods => _foods;
   List<TypeModel> get types => _types;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  int? get selectedTypeId => _selectedTypeId;
 
   // Inject usecase to provider
   MenuProvider({
@@ -50,8 +52,6 @@ class MenuProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // stimulate network delay
-      await Future.delayed(const Duration(seconds: 1));
       _foods = await _foodUsecase.fetchAllFoodItems(typeId);
     } catch (e) {
       _errorMessage = 'Failed to load food items: $e';
@@ -67,8 +67,6 @@ class MenuProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // stimulate network delay
-      await Future.delayed(const Duration(seconds: 1));
       await _foodUsecase.deleteFoodItem(id);
       _foods.removeWhere((food) => food.id == id);
     } catch (e) {
@@ -77,5 +75,13 @@ class MenuProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void selectType(int? typeId) {
+    if (typeId == _selectedTypeId) return;
+    _selectedTypeId = typeId;
+    notifyListeners();
+
+    fetchFoods(typeId);
   }
 }

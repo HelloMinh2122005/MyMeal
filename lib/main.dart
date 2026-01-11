@@ -3,7 +3,7 @@ import 'presentation/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'usecase/food_usecase.dart';
 import 'usecase/type_usecase.dart';
-import 'presentation/screens/menu/provider/menu_provider.dart ';
+import 'presentation/screens/menu/provider/menu_provider.dart';
 
 void main() => runApp(
   MultiProvider(

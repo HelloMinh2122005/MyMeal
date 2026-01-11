@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/styles/app_color.dart';
 
 class MealTypeWidget extends StatelessWidget {
-  final int id;
+  final int? id;
   final String mealType;
   final bool isSelected;
 
@@ -15,18 +15,30 @@ class MealTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: isSelected ? AppColors.pinkRedSelection : null,
-        color: isSelected ? null : AppColors.lightGrayBG,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Text(
-        mealType,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
-          fontWeight: FontWeight.bold,
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+        decoration: BoxDecoration(
+          gradient: isSelected ? AppColors.pinkRedSelection : null,
+          color: isSelected ? null : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ]
+              : [],
+        ),
+        child: Text(
+          mealType,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textPink1,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 14,
+          ),
         ),
       ),
     );

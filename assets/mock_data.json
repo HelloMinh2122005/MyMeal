@@ -2,23 +2,23 @@
     "meal_types": [
         {
             "id": 1,
-            "name": "Sáng"
+            "name": "🌅 Sáng"
         },
         {
             "id": 2,
-            "name": "Trưa"
+            "name": "☀️ Trưa"
         },
         {
             "id": 3,
-            "name": "Chiều"
+            "name": "🌤️ Chiều"
         },
         {
             "id": 4,
-            "name": "Tối"
+            "name": "🌙 Tối"
         },
         {
             "id": 5,
-            "name": "Ăn vặt"
+            "name": "🍟 Ăn vặt"
         }
     ],
     "foods": [

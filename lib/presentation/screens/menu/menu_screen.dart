@@ -41,8 +41,9 @@ class _MenuScreenState extends State<MenuScreen> {
           } else {
             List<FoodModelItem> foodItems = menuProvider.foods;
             List<TypeModel> mealTypes = menuProvider.types;
+            int? selectedId = menuProvider.selectedTypeId;
 
-            return _buildMenuContent(foodItems, mealTypes);
+            return _buildMenuContent(foodItems, mealTypes, selectedId);
           }
         },
       ),
@@ -84,6 +85,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget _buildMenuContent(
     List<FoodModelItem> foodItems,
     List<TypeModel> mealTypes,
+    int? selectedId,
   ) {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -96,8 +98,8 @@ class _MenuScreenState extends State<MenuScreen> {
           TitleWidget(title: "Thực đơn", subtitle: "Bạn đang muốn ăn gì nào?"),
           SizedBox(height: 8),
           SizedBox(
-            height: 20,
-            child: foodItems.isEmpty
+            height: 38,
+            child: mealTypes.isEmpty
                 ? const Center(
                     child: Text(
                       "Có vẻ thực đơn đang trống, hãy thêm món ăn mới nào!",
@@ -106,15 +108,36 @@ class _MenuScreenState extends State<MenuScreen> {
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: mealTypes.length,
+                    itemCount: mealTypes.length + 1,
                     itemBuilder: (context, index) {
-                      final item = mealTypes[index];
+                      final bool isAllOption = index == 0;
+                      final TypeModel? item = isAllOption
+                          ? null
+                          : mealTypes[index - 1];
+                      final int? itemId = isAllOption ? null : item?.id;
+                      final String itemName = isAllOption
+                          ? "📋 Tất cả"
+                          : item!.name;
+
+                      // Logic kiểm tra xem nút này có đang được chọn không
+                      // Nếu selectedId == null và đây là nút "Tất cả" -> True
+                      // Nếu selectedId == itemId của nút hiện tại -> True
+                      final bool isSelected = selectedId == itemId;
+
                       return Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: MealTypeWidget(
-                          id: item.id,
-                          mealType: item.name,
-                          isSelected: false,
+                        child: GestureDetector(
+                          // Bắt sự kiện Tap
+                          onTap: () {
+                            // Gọi hàm selectType trong Provider
+                            context.read<MenuProvider>().selectType(itemId);
+                          },
+                          child: MealTypeWidget(
+                            id: itemId,
+                            mealType: itemName,
+                            isSelected:
+                                isSelected, // Truyền trạng thái động vào
+                          ),
                         ),
                       );
                     },
