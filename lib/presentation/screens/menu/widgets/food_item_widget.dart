@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'add_new_modal.dart';
+import 'package:my_flutter_app/presentation/screens/menu/widgets/update_modal.dart';
 import '../../../../core/styles/app_color.dart';
 
 class FoodItemWidget extends StatelessWidget {
+  final int itemId;
   final String itemName;
   final String itemImageUrl;
   final String itemMealType;
 
   const FoodItemWidget({
     super.key,
+    required this.itemId,
     required this.itemName,
     required this.itemImageUrl,
     required this.itemMealType,
@@ -77,7 +79,7 @@ class FoodItemWidget extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(90),
                       ),
-                      child: AddNewModal(),
+                      child: UpdateModal(itemId: itemId),
                     ),
                   );
                 },

@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:my_flutter_app/models/type_model.dart';
+import '../../../../models/food_model_item.dart';
+import '../../../../usecase/food_usecase.dart';
+import '../../../../usecase/type_usecase.dart';
+
+class MenuProvider extends ChangeNotifier {
+  final FoodUsecase _foodUsecase;
+  final TypeUsecase _typeUsecase;
+
+  // State of food items
+  List<FoodModelItem> _foods = [];
+  List<TypeModel> _types = [];
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  // Getter for UI
+  List<FoodModelItem> get foods => _foods;
+  List<TypeModel> get types => _types;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+
+  // Inject usecase to provider
+  MenuProvider({
+    required FoodUsecase foodUsecase,
+    required TypeUsecase typeUsecase,
+  }) : _foodUsecase = foodUsecase,
+       _typeUsecase = typeUsecase;
+
+  Future<void> fetchTypes() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      // stimulate network delay
+      await Future.delayed(const Duration(seconds: 1));
+      _types = await _typeUsecase.fetchAllTypes();
+    } catch (e) {
+      _errorMessage = 'Failed to load types: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchFoods(int? typeId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      // stimulate network delay
+      await Future.delayed(const Duration(seconds: 1));
+      _foods = await _foodUsecase.fetchAllFoodItems(typeId);
+    } catch (e) {
+      _errorMessage = 'Failed to load food items: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteFood(int id) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      // stimulate network delay
+      await Future.delayed(const Duration(seconds: 1));
+      await _foodUsecase.deleteFoodItem(id);
+      _foods.removeWhere((food) => food.id == id);
+    } catch (e) {
+      _errorMessage = 'Failed to delete food item: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}

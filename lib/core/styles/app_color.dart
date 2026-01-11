@@ -62,4 +62,5 @@ class AppColors {
   // UI colors
   static const Color iconPink = Color(0xFFC6005C);
   static const Color buttonLightPink = Color(0xFFFCE7F3);
+  static const Color lightGrayBG = Color(0xFFF5F5F5);
 }

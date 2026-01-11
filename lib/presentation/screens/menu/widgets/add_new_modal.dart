@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
+import '../../../common/dropdown_button_widget.dart';
+import '../../../common/small_button_modal.dart';
 
-class AddNewModal extends StatelessWidget {
+class AddNewModal extends StatefulWidget {
   const AddNewModal({super.key});
+
+  @override
+  State<AddNewModal> createState() => _AddNewModalState();
+}
+
+class _AddNewModalState extends State<AddNewModal> {
+  final List<String> mealTypes;
+  String? selectedItem;
+
+  // TODO: load the meal types from service
+  _AddNewModalState()
+    : mealTypes = ['Sáng', 'Trưa', 'Tối', 'Ăn Vặt'],
+      selectedItem = null;
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +43,23 @@ class AddNewModal extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10),
+          // Dropdown
+          DropdownButtonWidget(
+            title: 'Chọn Loại Bữa Ăn',
+            items: mealTypes,
+            selectedItem: selectedItem ?? mealTypes.first,
+            onChanged: (value) {
+              setState(() {
+                selectedItem = value;
+              });
+            },
+          ),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Hủy'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Call service to add new item here
-                  Navigator.of(context).pop();
-                },
-                child: Text('Thêm'),
-              ),
+              SmallButtonModal(text: 'Hủy'),
+              SmallButtonModal(text: 'Thêm Món'),
             ],
           ),
         ],
