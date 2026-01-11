@@ -5,7 +5,10 @@ import 'package:flutter/services.dart';
 import '../models/food_model_item.dart';
 
 class FoodUsecase {
-  Future<List<FoodModelItem>> fetchAllFoodItems(int? typeId) async {
+  Future<List<FoodModelItem>> fetchAllFoodItems(
+    int? typeId,
+    String? keyword,
+  ) async {
     List<FoodModelItem> foodItems = [];
     final String response = await rootBundle.loadString(
       'assets/mock_data.json',
@@ -13,10 +16,14 @@ class FoodUsecase {
     final data = json.decode(response);
     foodItems = (data['foods'] as List)
         .where((item) {
-          if (typeId != null) {
-            return item['meal_type_id'] == typeId;
-          }
-          return true;
+          final matchesType = typeId == null || item['meal_type_id'] == typeId;
+          final matchesKeyword =
+              keyword == null ||
+              keyword.isEmpty ||
+              item['name'].toString().toLowerCase().contains(
+                keyword.toLowerCase(),
+              );
+          return matchesType && matchesKeyword;
         })
         .map((item) => FoodModelItem.fromJson(item))
         .toList();

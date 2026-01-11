@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter_app/models/food_model_item.dart';
 import 'package:my_flutter_app/models/type_model.dart';
 import 'package:my_flutter_app/presentation/common/meal_type_widget.dart';
+import 'package:my_flutter_app/presentation/screens/menu/widgets/search_panel.dart';
 import '../../../core/styles/app_color.dart';
 import '../../common/title_widget.dart';
 import 'widgets/add_new_modal.dart';
@@ -25,7 +26,7 @@ class _MenuScreenState extends State<MenuScreen> {
     // addPostFrameCallback: called after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MenuProvider>().fetchTypes();
-      context.read<MenuProvider>().fetchFoods(null);
+      context.read<MenuProvider>().fetchFoods(null, null);
     });
   }
 
@@ -39,11 +40,7 @@ class _MenuScreenState extends State<MenuScreen> {
           } else if (menuProvider.errorMessage != null) {
             return Center(child: Text(menuProvider.errorMessage!));
           } else {
-            List<FoodModelItem> foodItems = menuProvider.foods;
-            List<TypeModel> mealTypes = menuProvider.types;
-            int? selectedId = menuProvider.selectedTypeId;
-
-            return _buildMenuContent(foodItems, mealTypes, selectedId);
+            return _buildMenuContent();
           }
         },
       ),
@@ -82,11 +79,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Widget _buildMenuContent(
-    List<FoodModelItem> foodItems,
-    List<TypeModel> mealTypes,
-    int? selectedId,
-  ) {
+  Widget _buildMenuContent() {
     return Container(
       padding: const EdgeInsets.all(10),
       width: double.infinity,
@@ -97,9 +90,11 @@ class _MenuScreenState extends State<MenuScreen> {
         children: [
           TitleWidget(title: "Thực đơn", subtitle: "Bạn đang muốn ăn gì nào?"),
           SizedBox(height: 8),
+          SearchPanel(),
+          SizedBox(height: 5),
           SizedBox(
             height: 38,
-            child: mealTypes.isEmpty
+            child: context.read<MenuProvider>().types.isEmpty
                 ? const Center(
                     child: Text(
                       "Có vẻ thực đơn đang trống, hãy thêm món ăn mới nào!",
@@ -108,12 +103,12 @@ class _MenuScreenState extends State<MenuScreen> {
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: mealTypes.length + 1,
+                    itemCount: context.read<MenuProvider>().types.length + 1,
                     itemBuilder: (context, index) {
                       final bool isAllOption = index == 0;
                       final TypeModel? item = isAllOption
                           ? null
-                          : mealTypes[index - 1];
+                          : context.read<MenuProvider>().types[index - 1];
                       final int? itemId = isAllOption ? null : item?.id;
                       final String itemName = isAllOption
                           ? "📋 Tất cả"
@@ -122,7 +117,8 @@ class _MenuScreenState extends State<MenuScreen> {
                       // Logic kiểm tra xem nút này có đang được chọn không
                       // Nếu selectedId == null và đây là nút "Tất cả" -> True
                       // Nếu selectedId == itemId của nút hiện tại -> True
-                      final bool isSelected = selectedId == itemId;
+                      final bool isSelected =
+                          context.read<MenuProvider>().selectedTypeId == itemId;
 
                       return Padding(
                         padding: const EdgeInsets.only(right: 12),
@@ -130,7 +126,10 @@ class _MenuScreenState extends State<MenuScreen> {
                           // Bắt sự kiện Tap
                           onTap: () {
                             // Gọi hàm selectType trong Provider
-                            context.read<MenuProvider>().selectType(itemId);
+                            context.read<MenuProvider>().selectType(
+                              itemId,
+                              context.read<MenuProvider>().keyword,
+                            );
                           },
                           child: MealTypeWidget(
                             id: itemId,
@@ -146,9 +145,9 @@ class _MenuScreenState extends State<MenuScreen> {
           SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
-              itemCount: foodItems.length,
+              itemCount: context.read<MenuProvider>().foods.length,
               itemBuilder: (context, index) {
-                final item = foodItems[index];
+                final item = context.read<MenuProvider>().foods[index];
                 return FoodItemWidget(
                   itemId: item.id,
                   itemName: item.name,

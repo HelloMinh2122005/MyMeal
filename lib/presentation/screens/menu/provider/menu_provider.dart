@@ -14,6 +14,7 @@ class MenuProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   int? _selectedTypeId;
+  String? _keyword;
 
   // Getter for UI
   List<FoodModelItem> get foods => _foods;
@@ -21,6 +22,7 @@ class MenuProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   int? get selectedTypeId => _selectedTypeId;
+  String? get keyword => _keyword;
 
   // Inject usecase to provider
   MenuProvider({
@@ -46,13 +48,14 @@ class MenuProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchFoods(int? typeId) async {
+  Future<void> fetchFoods(int? typeId, String? keyword) async {
     _isLoading = true;
     _errorMessage = null;
+    _keyword = keyword;
     notifyListeners();
 
     try {
-      _foods = await _foodUsecase.fetchAllFoodItems(typeId);
+      _foods = await _foodUsecase.fetchAllFoodItems(typeId, keyword);
     } catch (e) {
       _errorMessage = 'Failed to load food items: $e';
     } finally {
@@ -77,11 +80,11 @@ class MenuProvider extends ChangeNotifier {
     }
   }
 
-  void selectType(int? typeId) {
-    if (typeId == _selectedTypeId) return;
+  void selectType(int? typeId, String? keyword) {
     _selectedTypeId = typeId;
+    _keyword = keyword;
     notifyListeners();
 
-    fetchFoods(typeId);
+    fetchFoods(typeId, keyword);
   }
 }

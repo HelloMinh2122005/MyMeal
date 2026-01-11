@@ -58,9 +58,12 @@ class AppColors {
   static const Color textWhite = Color(0xFFFFFFFF);
   static const Color textPrimary = Color(0xFF0A0A0A);
   static const Color textSecondary = Color(0xFF4A5565);
+  static const Color mutedText = Color(0x800A0A0A);
+  static const Color white80 = Color(0xCCFFFFFF);
 
   // UI colors
   static const Color iconPink = Color(0xFFC6005C);
   static const Color buttonLightPink = Color(0xFFFCE7F3);
   static const Color lightGrayBG = Color(0xFFF5F5F5);
+  static const Color fccee8 = Color(0xFFFCCEE8);
 }
