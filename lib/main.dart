@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'router/app_router.dart';
 import 'usecase/food_usecase.dart';
 import 'usecase/type_usecase.dart';
 import 'presentation/screens/menu/provider/menu_provider.dart';
@@ -34,7 +35,10 @@ void main() async {
           ),
         ),
       ],
-      child: const MaterialApp(debugShowCheckedModeBanner: false, home: Home()),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: appRouter,
+      ),
     ),
   );
 }

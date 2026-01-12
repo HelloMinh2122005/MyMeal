@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../menu/menu_screen.dart';
-import '../../random/random_screen.dart';
-import '../../../../core/animations/slide_right_route.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/styles/app_color.dart';
 
 class MenuCard extends StatelessWidget {
@@ -146,7 +144,7 @@ class TwoCardsWidget extends StatelessWidget {
         Expanded(
           child: MenuCard(
             onTap: () {
-              Navigator.push(context, SlideRightRoute(page: MenuScreen()));
+              context.push('/menu');
             },
           ),
         ),
@@ -154,7 +152,7 @@ class TwoCardsWidget extends StatelessWidget {
         Expanded(
           child: RandomCard(
             onTap: () {
-              Navigator.push(context, SlideRightRoute(page: RandomScreen()));
+              context.push('/random');
             },
           ),
         ),

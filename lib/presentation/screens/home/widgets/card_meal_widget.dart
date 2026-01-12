@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/styles/app_color.dart';
-import '../../../../core/animations/slide_right_route.dart';
-import '../../menu/menu_screen.dart';
 
 class NavButton extends StatelessWidget {
   final VoidCallback? onTap;
@@ -135,10 +134,7 @@ class CardMealWidget extends StatelessWidget {
                 SizedBox(height: 8),
                 NavButton(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      SlideRightRoute(page: MenuScreen()),
-                    );
+                    context.push('/menu');
                   },
                 ),
               ],

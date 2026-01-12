@@ -8,19 +8,21 @@ class RandomScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.lightPinkBG),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TitleWidget(
-              title: "Quay tay món ăn",
-              subtitle: "Hãy để ứng dụng chọn giúp bạn nhé! 🎲",
-            ),
-          ],
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(gradient: AppColors.lightPinkBG),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TitleWidget(
+                title: "Quay tay món ăn",
+                subtitle: "Hãy để ứng dụng chọn giúp bạn nhé! 🎲",
+              ),
+            ],
+          ),
         ),
       ),
     );

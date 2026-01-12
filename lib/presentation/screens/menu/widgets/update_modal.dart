@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/core/config/cloudinary_config.dart';
 import 'package:my_flutter_app/core/services/impl/media_service_impl.dart';
-import 'package:my_flutter_app/core/services/media_service.dart';
 import 'package:my_flutter_app/models/food_details_model.dart';
 import 'package:provider/provider.dart';
 import '../../../common/dropdown_button_widget.dart';
