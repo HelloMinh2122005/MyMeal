@@ -9,7 +9,6 @@ import '../../../../usecase/type_usecase.dart';
 class MenuProvider extends ChangeNotifier {
   final FoodUsecase _foodUsecase;
   final TypeUsecase _typeUsecase;
-  final MediaService _mediaService;
 
   // State of food items
   List<FoodModelItem> _foods = [];
@@ -33,8 +32,7 @@ class MenuProvider extends ChangeNotifier {
     required TypeUsecase typeUsecase,
     required MediaService mediaService,
   }) : _foodUsecase = foodUsecase,
-       _typeUsecase = typeUsecase,
-       _mediaService = mediaService;
+       _typeUsecase = typeUsecase;
 
   Future<void> fetchTypes() async {
     _isLoading = true;

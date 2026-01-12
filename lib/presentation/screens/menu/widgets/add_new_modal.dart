@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/core/config/cloudinary_config.dart';
+import 'package:my_flutter_app/core/services/impl/media_service_impl.dart';
 import 'package:provider/provider.dart';
 import '../../../common/dropdown_button_widget.dart';
 import '../../../common/small_button_modal.dart';
@@ -15,6 +17,7 @@ class AddNewModal extends StatefulWidget {
 class _AddNewModalState extends State<AddNewModal> {
   List<TypeModel> mealTypes = [];
   TypeModel? selectedItem;
+  String itemImageUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +65,44 @@ class _AddNewModalState extends State<AddNewModal> {
               });
             },
           ),
-          const Text(
-            'Hình ảnh',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Expanded(
+                child: const Text(
+                  'Hình ảnh',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                onPressed: () async {
+                  String? imageUrl = await MediaServiceImpl(
+                    CloudinaryConfig(),
+                  ).captureImageWithCamera();
+                  if (imageUrl != null) {
+                    setState(() {
+                      itemImageUrl = imageUrl;
+                    });
+                  }
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () async {
+                  setState(() {
+                    itemImageUrl = '';
+                  });
+                },
+              ),
+            ],
           ),
+          if (itemImageUrl.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Image.network(itemImageUrl, fit: BoxFit.cover),
+            )
+          else
+            const Image(image: AssetImage('assets/image-holder.png')),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
