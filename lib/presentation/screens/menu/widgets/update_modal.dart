@@ -20,6 +20,7 @@ class _UpdateModalState extends State<UpdateModal> {
   String itemName = '';
   int itemMealId = 0;
   String itemMealType = '';
+  String itemImageUrl = '';
   bool isLoading = true;
 
   @override
@@ -43,6 +44,7 @@ class _UpdateModalState extends State<UpdateModal> {
         itemName = item.name;
         itemMealId = item.typeId;
         itemMealType = item.typeName;
+        itemImageUrl = item.imageUrl;
         isLoading = false;
       });
     } else {
@@ -106,7 +108,44 @@ class _UpdateModalState extends State<UpdateModal> {
               });
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: const Text(
+                  'Hình ảnh',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                onPressed: () {
+                  setState(() {
+                    itemImageUrl = '';
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  setState(() {
+                    itemImageUrl = '';
+                  });
+                },
+              ),
+            ],
+          ),
+
+          if (itemImageUrl.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Image.network(itemImageUrl, fit: BoxFit.cover),
+            )
+          else
+            const Image(image: AssetImage('assets/image-holder.png')),
+
+          const SizedBox(height: 20),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

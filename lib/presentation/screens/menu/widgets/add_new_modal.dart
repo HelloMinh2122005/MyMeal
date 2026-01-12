@@ -34,11 +34,11 @@ class _AddNewModalState extends State<AddNewModal> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Thêm Món Mới',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 14),
+          const SizedBox(height: 14),
           TextField(
             decoration: InputDecoration(
               labelText: 'Tên Món Ăn',
@@ -46,7 +46,7 @@ class _AddNewModalState extends State<AddNewModal> {
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           // Dropdown
           DropdownButtonWidget(
             title: 'Chọn Loại Bữa Ăn',
@@ -62,7 +62,11 @@ class _AddNewModalState extends State<AddNewModal> {
               });
             },
           ),
-          SizedBox(height: 20),
+          const Text(
+            'Hình ảnh',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
