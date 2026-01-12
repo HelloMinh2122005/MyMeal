@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/core/config/cloudinary_config.dart';
+import 'package:my_flutter_app/core/services/impl/media_service_impl.dart';
+import 'package:my_flutter_app/core/services/media_service.dart';
 import 'package:my_flutter_app/models/food_details_model.dart';
 import 'package:provider/provider.dart';
 import '../../../common/dropdown_button_widget.dart';
@@ -119,15 +122,20 @@ class _UpdateModalState extends State<UpdateModal> {
               ),
               IconButton(
                 icon: const Icon(Icons.camera_alt, color: Colors.blue),
-                onPressed: () {
-                  setState(() {
-                    itemImageUrl = '';
-                  });
+                onPressed: () async {
+                  String? imageUrl = await MediaServiceImpl(
+                    CloudinaryConfig(),
+                  ).captureImageWithCamera();
+                  if (imageUrl != null) {
+                    setState(() {
+                      itemImageUrl = imageUrl;
+                    });
+                  }
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     itemImageUrl = '';
                   });

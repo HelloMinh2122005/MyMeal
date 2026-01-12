@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/core/services/media_service.dart';
 import 'package:my_flutter_app/models/food_details_model.dart';
 import 'package:my_flutter_app/models/type_model.dart';
 import '../../../../models/food_model_item.dart';
@@ -8,6 +9,7 @@ import '../../../../usecase/type_usecase.dart';
 class MenuProvider extends ChangeNotifier {
   final FoodUsecase _foodUsecase;
   final TypeUsecase _typeUsecase;
+  final MediaService _mediaService;
 
   // State of food items
   List<FoodModelItem> _foods = [];
@@ -29,8 +31,10 @@ class MenuProvider extends ChangeNotifier {
   MenuProvider({
     required FoodUsecase foodUsecase,
     required TypeUsecase typeUsecase,
+    required MediaService mediaService,
   }) : _foodUsecase = foodUsecase,
-       _typeUsecase = typeUsecase;
+       _typeUsecase = typeUsecase,
+       _mediaService = mediaService;
 
   Future<void> fetchTypes() async {
     _isLoading = true;
