@@ -101,7 +101,7 @@ class FoodUsecase {
     }
   }
 
-  Future<FoodModelItem> getRandomFoodItem(int? typeId) async {
+  Future<FoodModelItem?> getRandomFoodItem(int? typeId) async {
     List<FoodModelItem> foodItems = [];
     final String response = await rootBundle.loadString(
       'assets/mock_data.json',
@@ -109,10 +109,15 @@ class FoodUsecase {
     final data = json.decode(response);
     foodItems = (data['foods'] as List)
         .where(
-          typeId != null ? (item) => item['typeId'] == typeId : (item) => true,
+          typeId != null
+              ? (item) => item['meal_type_id'] == typeId
+              : (item) => true,
         )
         .map((item) => FoodModelItem.fromJson(item))
         .toList();
+    if (foodItems.isEmpty) {
+      return null;
+    }
     foodItems.shuffle();
     return foodItems.first;
   }

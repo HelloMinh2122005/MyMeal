@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_app/presentation/screens/random/providers/random_provider.dart';
 import 'package:provider/provider.dart';
 import 'router/app_router.dart';
 import 'usecase/food_usecase.dart';
@@ -31,6 +32,13 @@ void main() async {
             foodUsecase: context.read<FoodUsecase>(),
             typeUsecase: context.read<TypeUsecase>(),
             mediaService: context.read<MediaService>(),
+          ),
+        ),
+
+        ChangeNotifierProvider<RandomProviderNotifier>(
+          create: (context) => RandomProviderNotifier(
+            foodUsecase: context.read<FoodUsecase>(),
+            typeUsecase: context.read<TypeUsecase>(),
           ),
         ),
       ],

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_flutter_app/presentation/screens/menu/widgets/update_modal.dart';
-import '../../../../core/styles/app_color.dart';
+import '../../core/styles/app_color.dart';
 
 class FoodItemWidget extends StatelessWidget {
   final int itemId;
   final String itemName;
   final String itemImageUrl;
   final String itemMealType;
+  final bool isEditable;
 
   const FoodItemWidget({
     super.key,
@@ -15,6 +16,7 @@ class FoodItemWidget extends StatelessWidget {
     required this.itemName,
     required this.itemImageUrl,
     required this.itemMealType,
+    required this.isEditable,
   });
 
   @override
@@ -65,49 +67,51 @@ class FoodItemWidget extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(90),
+            if (isEditable) ...[
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90),
+                        ),
+                        child: UpdateModal(itemId: itemId),
                       ),
-                      child: UpdateModal(itemId: itemId),
-                    ),
-                  );
-                },
-                child: SvgPicture.asset(
-                  'assets/edit.svg',
-                  width: 20,
-                  height: 20,
+                    );
+                  },
+                  child: SvgPicture.asset(
+                    'assets/edit.svg',
+                    width: 20,
+                    height: 20,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFDF2F8),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: InkWell(
-                onTap: () {
-                  // Handle remove action
-                },
-                child: SvgPicture.asset(
-                  'assets/remove.svg',
-                  width: 20,
-                  height: 20,
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFDF2F8),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    // Handle remove action
+                  },
+                  child: SvgPicture.asset(
+                    'assets/remove.svg',
+                    width: 20,
+                    height: 20,
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),

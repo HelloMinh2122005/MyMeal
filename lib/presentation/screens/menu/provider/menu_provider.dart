@@ -40,8 +40,6 @@ class MenuProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // stimulate network delay
-      await Future.delayed(const Duration(seconds: 1));
       _types = await _typeUsecase.fetchAllTypes();
     } catch (e) {
       _errorMessage = 'Failed to load types: $e';

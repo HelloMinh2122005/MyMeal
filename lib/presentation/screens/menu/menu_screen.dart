@@ -5,7 +5,7 @@ import 'package:my_flutter_app/presentation/screens/menu/widgets/search_panel.da
 import '../../../core/styles/app_color.dart';
 import '../../common/title_widget.dart';
 import 'widgets/add_new_modal.dart';
-import 'widgets/food_item_widget.dart';
+import '../../common/food_item_widget.dart';
 import 'package:provider/provider.dart';
 import 'provider/menu_provider.dart';
 
@@ -157,6 +157,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     itemName: item.name,
                     itemImageUrl: item.imageUrl,
                     itemMealType: item.typeName,
+                    isEditable: true,
                   );
                 },
               ),
