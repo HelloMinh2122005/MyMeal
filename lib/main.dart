@@ -6,17 +6,13 @@ import 'package:provider/provider.dart';
 import 'router/app_router.dart';
 import 'usecase/food_usecase.dart';
 import 'usecase/type_usecase.dart';
-import 'core/config/cloudinary_config.dart';
 import 'core/services/media_service.dart';
 import 'core/services/impl/media_service_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final cloudinaryConfig = CloudinaryConfig();
-  await cloudinaryConfig.init();
-
-  final mediaService = MediaServiceImpl(cloudinaryConfig);
+  final mediaService = MediaServiceImpl();
 
   runApp(
     MultiProvider(
