@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/models/type_model.dart';
 import 'package:my_flutter_app/presentation/common/meal_type_widget.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_event.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_state.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/widgets/search_panel.dart';
+import 'package:my_flutter_app/usecase/food_usecase.dart';
+import 'package:my_flutter_app/usecase/type_usecase.dart';
 import '../../../core/styles/app_color.dart';
 import '../../common/title_widget.dart';
 import 'widgets/add_new_modal.dart';
 import '../../common/food_item_widget.dart';
-import 'package:provider/provider.dart';
-import 'provider/menu_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -21,23 +26,18 @@ class _MenuScreenState extends State<MenuScreen> {
   void initState() {
     super.initState();
 
-    // Use WidgetsBinding to ensure context is available
-    // addPostFrameCallback: called after the first frame is rendered
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MenuProvider>().fetchTypes();
-      context.read<MenuProvider>().fetchFoods(null, null);
-    });
+    context.read<MenuBloc>().add(MenuLoadedStarted());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<MenuProvider>(
-        builder: (context, menuProvider, child) {
-          if (menuProvider.isLoading) {
+      body: BlocBuilder<MenuBloc, MenuState>(
+        builder: (context, state) {
+          if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (menuProvider.errorMessage != null) {
-            return Center(child: Text(menuProvider.errorMessage!));
+          } else if (state.errorMessage != null) {
+            return Center(child: Text(state.errorMessage!));
           } else {
             return _buildMenuContent();
           }
@@ -49,11 +49,17 @@ class _MenuScreenState extends State<MenuScreen> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (context) => Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(90),
+            builder: (dialogContext) => BlocProvider(
+              create: (_) => MenuModalBloc(
+                foodUsecase: context.read<FoodUsecase>(),
+                typeUsecase: context.read<TypeUsecase>(),
               ),
-              child: AddNewModal(),
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(90),
+                ),
+                child: AddNewModal(),
+              ),
             ),
           );
         },
@@ -95,69 +101,78 @@ class _MenuScreenState extends State<MenuScreen> {
             SizedBox(height: 8),
             SearchPanel(),
             SizedBox(height: 5),
-            SizedBox(
-              height: 38,
-              child: context.read<MenuProvider>().types.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "Có vẻ thực đơn đang trống, hãy thêm món ăn mới nào!",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: context.read<MenuProvider>().types.length + 1,
-                      itemBuilder: (context, index) {
-                        final bool isAllOption = index == 0;
-                        final TypeModel? item = isAllOption
-                            ? null
-                            : context.read<MenuProvider>().types[index - 1];
-                        final int? itemId = isAllOption ? null : item?.id;
-                        final String itemName = isAllOption
-                            ? "📋 Tất cả"
-                            : item!.name;
-
-                        // Logic kiểm tra xem nút này có đang được chọn không
-                        // Nếu selectedId == null và đây là nút "Tất cả" -> True
-                        // Nếu selectedId == itemId của nút hiện tại -> True
-                        final bool isSelected =
-                            context.read<MenuProvider>().selectedTypeId ==
-                            itemId;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: GestureDetector(
-                            // Bắt sự kiện Tap
-                            onTap: () {
-                              // Gọi hàm selectType trong Provider
-                              context.read<MenuProvider>().selectType(
-                                itemId,
-                                context.read<MenuProvider>().keyword,
-                              );
-                            },
-                            child: MealTypeWidget(
-                              id: itemId,
-                              mealType: itemName,
-                              isSelected:
-                                  isSelected, // Truyền trạng thái động vào
-                            ),
+            BlocBuilder<MenuBloc, MenuState>(
+              builder: (context, state) {
+                return SizedBox(
+                  height: 38,
+                  child: state.types.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "Có vẻ thực đơn đang trống, hãy thêm món ăn mới nào!",
+                            style: TextStyle(color: Colors.grey),
                           ),
-                        );
-                      },
-                    ),
+                        )
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.types.length + 1,
+                          itemBuilder: (context, index) {
+                            final bool isAllOption = index == 0;
+                            final TypeModel? item = isAllOption
+                                ? null
+                                : state.types[index - 1];
+                            final int? itemId = isAllOption ? null : item?.id;
+                            final String itemName = isAllOption
+                                ? "📋 Tất cả"
+                                : item!.name;
+
+                            // Logic kiểm tra xem nút này có đang được chọn không
+                            // Nếu selectedId == null và đây là nút "Tất cả" -> True
+                            // Nếu selectedId == itemId của nút hiện tại -> True
+                            final bool isSelected =
+                                state.selectedTypeId == itemId;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: GestureDetector(
+                                // Bắt sự kiện Tap
+                                onTap: () {
+                                  // Gọi hàm selectType bằng cách dispatch event
+                                  context.read<MenuBloc>().add(
+                                    MenuFilterChanged(
+                                      typeId: itemId,
+                                      keyword: state.keyword,
+                                    ),
+                                  );
+                                },
+                                child: MealTypeWidget(
+                                  id: itemId,
+                                  mealType: itemName,
+                                  isSelected:
+                                      isSelected, // Truyền trạng thái động vào
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                );
+              },
             ),
             SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: context.read<MenuProvider>().foods.length,
-                itemBuilder: (context, index) {
-                  final item = context.read<MenuProvider>().foods[index];
-                  return FoodItemWidget(
-                    itemId: item.id,
-                    itemName: item.name,
-                    itemImageUrl: item.imageUrl,
-                    itemMealType: item.typeName,
-                    isEditable: true,
+              child: BlocBuilder<MenuBloc, MenuState>(
+                builder: (context, state) {
+                  return ListView.builder(
+                    itemCount: state.foods.length,
+                    itemBuilder: (context, index) {
+                      final item = state.foods[index];
+                      return FoodItemWidget(
+                        itemId: item.id,
+                        itemName: item.name,
+                        itemImageUrl: item.imageUrl,
+                        itemMealType: item.typeName,
+                        isEditable: true,
+                      );
+                    },
                   );
                 },
               ),

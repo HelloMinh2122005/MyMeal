@@ -20,14 +20,6 @@ class MenuState extends Equatable {
     this.keyword,
   });
 
-  // Getter for UI (keeping backward compatibility)
-  List<FoodModelItem> get _foods => foods;
-  List<TypeModel> get _types => types;
-  bool get _isLoading => isLoading;
-  String? get _errorMessage => errorMessage;
-  int? get _selectedTypeId => selectedTypeId;
-  String? get _keyword => keyword;
-
   MenuState copyWith({
     List<FoodModelItem>? foods,
     List<TypeModel>? types,

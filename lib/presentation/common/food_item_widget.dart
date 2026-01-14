@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/widgets/update_modal.dart';
+import 'package:my_flutter_app/usecase/food_usecase.dart';
+import 'package:my_flutter_app/usecase/type_usecase.dart';
 import '../../core/styles/app_color.dart';
 
 class FoodItemWidget extends StatelessWidget {
@@ -78,11 +82,18 @@ class FoodItemWidget extends StatelessWidget {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(90),
+                      builder: (dialogContext) => BlocProvider(
+                        create: (_) => MenuModalBloc(
+                          foodUsecase: context.read<FoodUsecase>(),
+                          typeUsecase: context.read<TypeUsecase>(),
+                          itemId: itemId,
                         ),
-                        child: UpdateModal(itemId: itemId),
+                        child: Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(90),
+                          ),
+                          child: UpdateModal(itemId: itemId),
+                        ),
                       ),
                     );
                   },

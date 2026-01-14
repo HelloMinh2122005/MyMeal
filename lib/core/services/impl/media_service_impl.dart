@@ -20,19 +20,19 @@ class MediaServiceImpl implements MediaService {
   MediaServiceImpl._internal(this._config);
 
   @override
-  Future<String?> captureImageWithCamera() async {
+  Future<XFile?> captureImageWithCamera() async {
     try {
       // Check if the platform supports camera capture
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
         final XFile? photo = await _picker.pickImage(
           source: ImageSource.gallery,
         );
-        return photo?.path;
+        return photo;
       } else {
         final XFile? photo = await _picker.pickImage(
           source: ImageSource.camera,
         );
-        return photo != null ? uploadToCloud(photo) : '';
+        return photo;
       }
     } catch (e) {
       throw Exception('Failed to capture image: $e');

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/presentation/screens/random/providers/random_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/random/bloc/random_bloc.dart';
 import 'package:provider/provider.dart';
 import 'router/app_router.dart';
 import 'usecase/food_usecase.dart';
 import 'usecase/type_usecase.dart';
-import 'presentation/screens/menu/provider/menu_provider.dart';
 import 'core/config/cloudinary_config.dart';
 import 'core/services/media_service.dart';
 import 'core/services/impl/media_service_impl.dart';
@@ -20,26 +21,28 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        // Create use case first
+        // Create use case as singletons (they should be reused across the app)
         Provider<FoodUsecase>(create: (_) => FoodUsecase()),
         Provider<TypeUsecase>(create: (_) => TypeUsecase()),
 
         Provider<MediaService>.value(value: mediaService),
 
-        // Create Provider, then inject use case to provider
-        ChangeNotifierProvider<MenuProvider>(
-          create: (context) => MenuProvider(
+        // Create BlocProviders with lazy initialization
+        BlocProvider<MenuBloc>(
+          create: (context) => MenuBloc(
             foodUsecase: context.read<FoodUsecase>(),
             typeUsecase: context.read<TypeUsecase>(),
-            mediaService: context.read<MediaService>(),
           ),
+          lazy: false, // Initialize immediately since it's used in menu screen
         ),
 
-        ChangeNotifierProvider<RandomProviderNotifier>(
-          create: (context) => RandomProviderNotifier(
+        BlocProvider<RandomBloc>(
+          create: (context) => RandomBloc(
             foodUsecase: context.read<FoodUsecase>(),
             typeUsecase: context.read<TypeUsecase>(),
           ),
+          lazy:
+              false, // Initialize immediately since it's used in random screen
         ),
       ],
       child: MaterialApp.router(

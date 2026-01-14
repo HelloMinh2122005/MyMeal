@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/food_details_model.dart';
 import '../models/food_model_item.dart';
 
@@ -31,7 +32,7 @@ class FoodUsecase {
     return foodItems;
   }
 
-  Future<FoodDetailsModel> fetchFoodItemById(int id) async {
+  Future<FoodDetailsModel?> fetchFoodItemById(int id) async {
     FoodDetailsModel foodItem;
     final String response = await rootBundle.loadString(
       'assets/mock_data.json',
@@ -44,13 +45,19 @@ class FoodUsecase {
     if (item != null) {
       foodItem = FoodDetailsModel.fromJson(item);
     } else {
-      throw Exception('Food item not found');
+      return null;
     }
     return foodItem;
   }
 
-  Future<FoodModelItem> addFoodItem() async {
+  Future<FoodModelItem> addFoodItem(
+    String? name,
+    int? typeId,
+    XFile? itemImageFile,
+  ) async {
     try {
+      // Upload image here
+
       return FoodModelItem(
         id: 1,
         name: 'New Food',
@@ -62,8 +69,15 @@ class FoodUsecase {
     }
   }
 
-  Future<FoodModelItem> updateFoodItem() async {
+  Future<FoodModelItem> updateFoodItem(
+    int? id,
+    String? name,
+    int? typeId,
+    XFile? itemImageFile,
+  ) async {
     try {
+      // Upload image here
+
       return FoodModelItem(
         id: 1,
         name: 'Updated Food',

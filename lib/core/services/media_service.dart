@@ -1,4 +1,6 @@
+import 'package:image_picker/image_picker.dart';
+
 abstract class MediaService {
-  Future<String?> captureImageWithCamera();
+  Future<XFile?> captureImageWithCamera();
   // Future<String?> pickImageFromGallery();
 }

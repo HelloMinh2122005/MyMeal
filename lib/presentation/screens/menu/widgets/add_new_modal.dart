@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_flutter_app/core/config/cloudinary_config.dart';
 import 'package:my_flutter_app/core/services/impl/media_service_impl.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_event.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_state.dart';
+import 'package:my_flutter_app/presentation/screens/menu/widgets/helpers/image_strategy.dart';
 import '../../../common/dropdown_button_widget.dart';
 import '../../../common/small_button_modal.dart';
-import '../provider/menu_provider.dart';
-import '../../../../models/type_model.dart';
 
 class AddNewModal extends StatefulWidget {
   const AddNewModal({super.key});
@@ -15,104 +18,111 @@ class AddNewModal extends StatefulWidget {
 }
 
 class _AddNewModalState extends State<AddNewModal> {
-  List<TypeModel> mealTypes = [];
-  TypeModel? selectedItem;
-  String itemImageUrl = '';
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<MenuModalBloc>().add(LoadedModalStarted(foodId: null));
+  }
 
   @override
   Widget build(BuildContext context) {
-    mealTypes = context.read<MenuProvider>().types;
-    if (mealTypes.isEmpty) {
-      throw Exception('Meal types list is empty');
-    }
-    selectedItem ??= mealTypes.first;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Thêm Món Mới',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 14),
-          TextField(
-            decoration: InputDecoration(
-              labelText: 'Tên Món Ăn',
-              labelStyle: TextStyle(fontSize: 14),
-              border: OutlineInputBorder(),
+    return BlocBuilder<MenuModalBloc, MenuModalState>(
+      builder: (context, state) {
+        // Show loading indicator while data is being fetched
+        if (state.isLoading || state.types.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
             ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
           ),
-          const SizedBox(height: 10),
-          // Dropdown
-          DropdownButtonWidget(
-            title: 'Chọn Loại Bữa Ăn',
-            items: mealTypes,
-            keySearch: 'name',
-            selectedItem: selectedItem ?? mealTypes.first,
-            onChanged: (int? value) {
-              setState(() {
-                selectedItem = mealTypes.firstWhere(
-                  (type) => type.id == value,
-                  orElse: () => mealTypes.first,
-                );
-              });
-            },
-          ),
-          Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: const Text(
-                  'Hình ảnh',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              const Text(
+                'Thêm Món Mới',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Tên Món Ăn',
+                  labelStyle: TextStyle(fontSize: 14),
+                  border: OutlineInputBorder(),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.camera_alt, color: Colors.blue),
-                onPressed: () async {
-                  String? imageUrl = await MediaServiceImpl(
-                    CloudinaryConfig(),
-                  ).captureImageWithCamera();
-                  if (imageUrl != null) {
-                    setState(() {
-                      itemImageUrl = imageUrl;
-                    });
-                  }
+              const SizedBox(height: 10),
+              // Dropdown
+              DropdownButtonWidget(
+                title: 'Chọn Loại Bữa Ăn',
+                items: state.types,
+                keySearch: 'name',
+                selectedItem: state.selectedItem ?? state.types.first,
+                onChanged: (int? value) {
+                  context.read<MenuModalBloc>().add(
+                    ModalSelectedMealTypeChanged(selectedMealTypeId: value),
+                  );
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () async {
-                  setState(() {
-                    itemImageUrl = '';
-                  });
-                },
+              Row(
+                children: [
+                  Expanded(
+                    child: const Text(
+                      'Hình ảnh',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                    onPressed: () async {
+                      XFile? newImageSelected = await MediaServiceImpl(
+                        CloudinaryConfig(),
+                      ).captureImageWithCamera();
+                      if (newImageSelected != null) {
+                        context.read<MenuModalBloc>().add(
+                          ModalImageSelected(imageFile: newImageSelected),
+                        );
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      context.read<MenuModalBloc>().add(
+                        ModalImageSelected(imageFile: null),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              imageContainerStrategy(state.imageUrl, state.imageFile),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SmallButtonModal(text: 'Hủy'),
+                  SmallButtonModal(text: 'Thêm Món'),
+                ],
               ),
             ],
           ),
-          if (itemImageUrl.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.network(itemImageUrl, fit: BoxFit.cover),
-            )
-          else
-            const Image(image: AssetImage('assets/image-holder.png')),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SmallButtonModal(text: 'Hủy'),
-              SmallButtonModal(text: 'Thêm Món'),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
