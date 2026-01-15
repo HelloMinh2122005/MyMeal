@@ -4,8 +4,8 @@ import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dar
 import 'package:my_flutter_app/presentation/screens/random/bloc/random_bloc.dart';
 import 'package:provider/provider.dart';
 import 'router/app_router.dart';
-import 'usecase/food_usecase.dart';
-import 'usecase/type_usecase.dart';
+import 'application/usecase/food_usecase.dart';
+import 'application/usecase/type_usecase.dart';
 import 'core/services/media_service.dart';
 import 'core/services/impl/media_service_impl.dart';
 

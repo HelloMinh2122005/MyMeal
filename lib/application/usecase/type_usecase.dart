@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../models/type_model.dart';
+import '../entities/type_model.dart';
 
 class TypeUsecase {
   Future<List<TypeModel>> fetchAllTypes() async {

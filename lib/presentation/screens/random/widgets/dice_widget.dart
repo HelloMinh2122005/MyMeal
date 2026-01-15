@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gif_view/gif_view.dart';
 import 'package:my_flutter_app/core/animations/bounding_images.dart';
 import 'package:my_flutter_app/core/styles/app_color.dart';
-import 'package:my_flutter_app/models/type_model.dart';
+import 'package:my_flutter_app/application/entities/type_model.dart';
 import 'package:my_flutter_app/presentation/common/meal_type_widget.dart';
 import 'package:my_flutter_app/presentation/common/food_item_widget.dart';
 import 'package:my_flutter_app/presentation/screens/random/widgets/result_widget.dart';

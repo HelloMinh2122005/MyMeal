@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:my_flutter_app/models/type_model.dart';
+import 'package:my_flutter_app/application/entities/type_model.dart';
 
 class MenuModalState extends Equatable {
   final List<TypeModel> mealTypes;

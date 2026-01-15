@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_app/models/food_details_model.dart';
-import 'package:my_flutter_app/models/type_model.dart';
+import 'package:my_flutter_app/application/entities/food_details_model.dart';
+import 'package:my_flutter_app/application/entities/type_model.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_event.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_state.dart';
-import 'package:my_flutter_app/usecase/food_usecase.dart';
-import 'package:my_flutter_app/usecase/type_usecase.dart';
+import 'package:my_flutter_app/application/usecase/food_usecase.dart';
+import 'package:my_flutter_app/application/usecase/type_usecase.dart';
 
 class MenuModalBloc extends Bloc<MenuModalEvent, MenuModalState> {
   final FoodUsecase _foodUsecase;

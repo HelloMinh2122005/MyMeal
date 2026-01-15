@@ -1,9 +1,9 @@
-import 'package:my_flutter_app/models/food_model_item.dart';
+import 'package:my_flutter_app/application/entities/food_model_item.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_event.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_app/usecase/food_usecase.dart';
-import 'package:my_flutter_app/usecase/type_usecase.dart';
+import 'package:my_flutter_app/application/usecase/food_usecase.dart';
+import 'package:my_flutter_app/application/usecase/type_usecase.dart';
 
 class MenuBloc extends Bloc<MenuEvent, MenuState> {
   final FoodUsecase _foodUsecase;

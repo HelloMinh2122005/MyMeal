@@ -44,10 +44,17 @@ dependencies:
   equatable: ^2.0.8
   flutter_bloc: ^9.1.1
   cross_file: ^0.3.5+1
+  drift: ^2.30.1
+  drift_flutter: ^0.2.8
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # For generate code (MUST HAVE)
+  drift_dev: ^2.30.1
+  build_runner: ^2.10.5
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

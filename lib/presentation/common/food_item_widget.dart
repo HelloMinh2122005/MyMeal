@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/widgets/update_modal.dart';
-import 'package:my_flutter_app/usecase/food_usecase.dart';
-import 'package:my_flutter_app/usecase/type_usecase.dart';
+import 'package:my_flutter_app/application/usecase/food_usecase.dart';
+import 'package:my_flutter_app/application/usecase/type_usecase.dart';
 import '../../core/styles/app_color.dart';
 
 class FoodItemWidget extends StatelessWidget {

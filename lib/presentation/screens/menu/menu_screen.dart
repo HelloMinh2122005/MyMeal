@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:my_flutter_app/models/type_model.dart';
+import 'package:my_flutter_app/application/entities/type_model.dart';
 import 'package:my_flutter_app/presentation/common/meal_type_widget.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_event.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_state.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/widgets/search_panel.dart';
-import 'package:my_flutter_app/usecase/food_usecase.dart';
-import 'package:my_flutter_app/usecase/type_usecase.dart';
+import 'package:my_flutter_app/application/usecase/food_usecase.dart';
+import 'package:my_flutter_app/application/usecase/type_usecase.dart';
 import '../../../core/styles/app_color.dart';
 import '../../common/title_widget.dart';
 import 'widgets/add_new_modal.dart';

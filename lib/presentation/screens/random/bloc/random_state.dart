@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:my_flutter_app/models/food_model_item.dart';
-import 'package:my_flutter_app/models/type_model.dart';
+import 'package:my_flutter_app/application/entities/food_model_item.dart';
+import 'package:my_flutter_app/application/entities/type_model.dart';
 
 class RandomState extends Equatable {
   final List<FoodModelItem> _foods;

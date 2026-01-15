@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/random/bloc/random_event.dart';
 import 'package:my_flutter_app/presentation/screens/random/bloc/random_state.dart';
-import 'package:my_flutter_app/usecase/food_usecase.dart';
-import 'package:my_flutter_app/usecase/type_usecase.dart';
+import 'package:my_flutter_app/application/usecase/food_usecase.dart';
+import 'package:my_flutter_app/application/usecase/type_usecase.dart';
 
 class RandomBloc extends Bloc<RandomEvent, RandomState> {
   final FoodUsecase _foodUsecase;

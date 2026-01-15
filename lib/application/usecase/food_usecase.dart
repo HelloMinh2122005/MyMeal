@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/food_details_model.dart';
-import '../models/food_model_item.dart';
+import '../entities/food_details_model.dart';
+import '../entities/food_model_item.dart';
 
 class FoodUsecase {
   Future<List<FoodModelItem>> fetchAllFoodItems(
