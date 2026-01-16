@@ -138,7 +138,7 @@ class _MenuScreenState extends State<MenuScreen> {
                               child: GestureDetector(
                                 // Bắt sự kiện Tap
                                 onTap: () {
-                                  // Gọi hàm selectType bằng cách dispatch event
+                                  // Always trigger filter event, even when reselecting the same type
                                   context.read<MenuBloc>().add(
                                     MenuFilterChanged(
                                       typeId: itemId,

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_flutter_app/application/repositories/interface_food_repository.dart';
 import 'package:my_flutter_app/application/repositories/interface_type_repository.dart';
+import 'package:my_flutter_app/core/database/app_database.dart';
 import 'package:my_flutter_app/domain/repositories/food_repository.dart';
 import 'package:my_flutter_app/domain/repositories/type_repository.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
@@ -14,11 +15,19 @@ import '../core/services/impl/media_service_impl.dart';
 
 List<SingleChildWidget> getProviders() {
   final mediaService = MediaServiceImpl();
+  final database = AppDatabase();
 
   return [
+    // Register database
+    Provider<AppDatabase>.value(value: database),
+
     // Register interfaces with concrete implementations
-    Provider<InterfaceFoodRepository>(create: (_) => FoodRepository()),
-    Provider<InterfaceTypeRepository>(create: (_) => TypeRepository()),
+    Provider<InterfaceFoodRepository>(
+      create: (context) => FoodRepository(context.read<AppDatabase>()),
+    ),
+    Provider<InterfaceTypeRepository>(
+      create: (context) => TypeRepository(context.read<AppDatabase>()),
+    ),
 
     Provider<FoodUsecase>(
       create: (context) =>

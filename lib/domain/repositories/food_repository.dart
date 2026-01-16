@@ -1,55 +1,86 @@
-import 'dart:convert';
+import 'dart:math';
 
-import 'package:flutter/services.dart';
+import 'package:drift/drift.dart';
 import 'package:my_flutter_app/application/entities/food_details_model.dart';
 import 'package:my_flutter_app/application/entities/food_model_item.dart';
 import 'package:my_flutter_app/application/repositories/interface_food_repository.dart';
+import 'package:my_flutter_app/core/database/app_database.dart';
 
 class FoodRepository implements InterfaceFoodRepository {
+  final AppDatabase database;
+
+  FoodRepository(this.database);
+
   @override
   Future<List<FoodModelItem>> fetchAllFoodItems(
     int? typeId,
     String? keyword,
   ) async {
-    List<FoodModelItem> foodItems = [];
-    final String response = await rootBundle.loadString(
-      'assets/mock_data.json',
-    );
-    final data = json.decode(response);
-    foodItems = (data['foods'] as List)
-        .where((item) {
-          final matchesType = typeId == null || item['meal_type_id'] == typeId;
-          final matchesKeyword =
-              keyword == null ||
-              keyword.isEmpty ||
-              item['name'].toString().toLowerCase().contains(
-                keyword.toLowerCase(),
-              );
-          return matchesType && matchesKeyword;
-        })
-        .map((item) => FoodModelItem.fromJson(item))
-        .toList();
+    try {
+      final query = database.select(database.food).join([
+        leftOuterJoin(
+          database.mealTypes,
+          database.mealTypes.id.equalsExp(database.food.typeId),
+        ),
+      ]);
 
-    return foodItems;
+      if (typeId != null) {
+        query.where(database.food.typeId.equals(typeId));
+      }
+
+      if (keyword != null && keyword.isNotEmpty) {
+        query.where(
+          database.food.name.lower().like('%${keyword.toLowerCase()}%'),
+        );
+      }
+
+      final results = await query.get();
+
+      return results.map((row) {
+        final food = row.readTable(database.food);
+        final mealType = row.readTableOrNull(database.mealTypes);
+
+        return FoodModelItem(
+          id: food.id,
+          name: food.name,
+          typeName: mealType?.name ?? '',
+          imageUrl: food.imageUrl ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch food items: $e');
+    }
   }
 
   @override
   Future<FoodDetailsModel?> fetchFoodItemById(int id) async {
-    FoodDetailsModel foodItem;
-    final String response = await rootBundle.loadString(
-      'assets/mock_data.json',
-    );
-    final data = json.decode(response);
-    final item = (data['foods'] as List).firstWhere(
-      (item) => item['id'] == id,
-      orElse: () => null,
-    );
-    if (item != null) {
-      foodItem = FoodDetailsModel.fromJson(item);
-    } else {
-      return null;
+    try {
+      final query = database.select(database.food).join([
+        leftOuterJoin(
+          database.mealTypes,
+          database.mealTypes.id.equalsExp(database.food.typeId),
+        ),
+      ])..where(database.food.id.equals(id));
+
+      final result = await query.getSingleOrNull();
+
+      if (result == null) {
+        return null;
+      }
+
+      final food = result.readTable(database.food);
+      final mealType = result.readTableOrNull(database.mealTypes);
+
+      return FoodDetailsModel(
+        id: food.id,
+        name: food.name,
+        imageUrl: food.imageUrl ?? '',
+        typeId: food.typeId,
+        typeName: mealType?.name ?? '',
+      );
+    } catch (e) {
+      throw Exception('Failed to fetch food item: $e');
     }
-    return foodItem;
   }
 
   @override
@@ -59,11 +90,29 @@ class FoodRepository implements InterfaceFoodRepository {
     String? imageUrl,
   ) async {
     try {
+      if (name == null || typeId == null) {
+        throw Exception('Name and type ID are required');
+      }
+
+      final id = await database
+          .into(database.food)
+          .insert(
+            FoodCompanion.insert(
+              name: name,
+              typeId: typeId,
+              imageUrl: Value(imageUrl),
+            ),
+          );
+
+      final mealType = await (database.select(
+        database.mealTypes,
+      )..where((t) => t.id.equals(typeId))).getSingle();
+
       return FoodModelItem(
-        id: 1,
-        name: 'New Food',
-        typeName: 'New Type',
-        imageUrl: '',
+        id: id,
+        name: name,
+        typeName: mealType.name,
+        imageUrl: imageUrl ?? '',
       );
     } catch (e) {
       throw Exception('Failed to add food item: $e');
@@ -78,11 +127,29 @@ class FoodRepository implements InterfaceFoodRepository {
     String? imageUrl,
   ) async {
     try {
+      if (id == null || name == null || typeId == null) {
+        throw Exception('ID, name, and type ID are required');
+      }
+
+      await (database.update(
+        database.food,
+      )..where((t) => t.id.equals(id))).write(
+        FoodCompanion(
+          name: Value(name),
+          typeId: Value(typeId),
+          imageUrl: Value(imageUrl),
+        ),
+      );
+
+      final mealType = await (database.select(
+        database.mealTypes,
+      )..where((t) => t.id.equals(typeId))).getSingle();
+
       return FoodModelItem(
-        id: 1,
-        name: 'Updated Food',
-        typeName: 'Updated Type',
-        imageUrl: '',
+        id: id,
+        name: name,
+        typeName: mealType.name,
+        imageUrl: imageUrl ?? '',
       );
     } catch (e) {
       throw Exception('Failed to update food item: $e');
@@ -92,7 +159,9 @@ class FoodRepository implements InterfaceFoodRepository {
   @override
   Future<void> deleteFoodItem(int id) async {
     try {
-      return;
+      await (database.delete(
+        database.food,
+      )..where((t) => t.id.equals(id))).go();
     } catch (e) {
       throw Exception('Failed to delete food item: $e');
     }
@@ -101,17 +170,26 @@ class FoodRepository implements InterfaceFoodRepository {
   @override
   Future<List<FoodModelItem>> searchFoodItemByName(String name) async {
     try {
-      final String response = await rootBundle.loadString(
-        'assets/mock_data.json',
-      );
-      final data = json.decode(response);
-      final item = (data['foods'] as List)
-          .where(
-            (item) =>
-                item['name'].toString().toLowerCase() == name.toLowerCase(),
-          )
-          .toList();
-      return item.map((item) => FoodModelItem.fromJson(item)).toList();
+      final query = database.select(database.food).join([
+        leftOuterJoin(
+          database.mealTypes,
+          database.mealTypes.id.equalsExp(database.food.typeId),
+        ),
+      ])..where(database.food.name.lower().equals(name.toLowerCase()));
+
+      final results = await query.get();
+
+      return results.map((row) {
+        final food = row.readTable(database.food);
+        final mealType = row.readTableOrNull(database.mealTypes);
+
+        return FoodModelItem(
+          id: food.id,
+          name: food.name,
+          typeName: mealType?.name ?? '',
+          imageUrl: food.imageUrl ?? '',
+        );
+      }).toList();
     } catch (e) {
       throw Exception('Failed to search food item: $e');
     }
@@ -119,23 +197,38 @@ class FoodRepository implements InterfaceFoodRepository {
 
   @override
   Future<FoodModelItem?> getRandomFoodItem(int? typeId) async {
-    List<FoodModelItem> foodItems = [];
-    final String response = await rootBundle.loadString(
-      'assets/mock_data.json',
-    );
-    final data = json.decode(response);
-    foodItems = (data['foods'] as List)
-        .where(
-          typeId != null
-              ? (item) => item['meal_type_id'] == typeId
-              : (item) => true,
-        )
-        .map((item) => FoodModelItem.fromJson(item))
-        .toList();
-    if (foodItems.isEmpty) {
-      return null;
+    try {
+      final query = database.select(database.food).join([
+        leftOuterJoin(
+          database.mealTypes,
+          database.mealTypes.id.equalsExp(database.food.typeId),
+        ),
+      ]);
+
+      if (typeId != null) {
+        query.where(database.food.typeId.equals(typeId));
+      }
+
+      final results = await query.get();
+
+      if (results.isEmpty) {
+        return null;
+      }
+
+      final random = Random();
+      final randomResult = results[random.nextInt(results.length)];
+
+      final food = randomResult.readTable(database.food);
+      final mealType = randomResult.readTableOrNull(database.mealTypes);
+
+      return FoodModelItem(
+        id: food.id,
+        name: food.name,
+        typeName: mealType?.name ?? '',
+        imageUrl: food.imageUrl ?? '',
+      );
+    } catch (e) {
+      throw Exception('Failed to get random food item: $e');
     }
-    foodItems.shuffle();
-    return foodItems.first;
   }
 }

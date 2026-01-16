@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
+import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_event.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_event.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_state.dart';
@@ -45,6 +47,8 @@ class _AddNewModalState extends State<AddNewModal> {
             ),
           );
           Navigator.of(context).pop();
+          // Reload menu list after successful add
+          context.read<MenuBloc>().add(MenuLoadedStarted());
         }
       },
       child: BlocBuilder<MenuModalBloc, MenuModalState>(

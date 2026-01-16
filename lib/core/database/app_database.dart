@@ -1,0 +1,27 @@
+import 'dart:io';
+
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:my_flutter_app/domain/models/food.dart';
+import 'package:my_flutter_app/domain/models/meal_type.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
+part 'app_database.g.dart';
+
+@DriftDatabase(tables: [Food, MealTypes])
+class AppDatabase extends _$AppDatabase {
+  AppDatabase() : super(_openConnection());
+
+  @override
+  int get schemaVersion => 1;
+
+  static LazyDatabase _openConnection() {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, 'my_meal_db.sqlite'));
+
+      return NativeDatabase(file);
+    });
+  }
+}

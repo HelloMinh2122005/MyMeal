@@ -48,6 +48,11 @@ dependencies:
   drift_flutter: ^0.2.8
   path_provider: ^2.1.5
 
+  # SQLite native libs cho Android/iOS/MacOS
+  sqlite3_flutter_libs: ^0.5.0
+  # Để tìm đường dẫn lưu file database
+  path: ^1.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
