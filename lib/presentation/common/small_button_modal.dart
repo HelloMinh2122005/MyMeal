@@ -3,14 +3,14 @@ import '../../core/styles/app_color.dart';
 
 class SmallButtonModal extends StatelessWidget {
   final String text;
-  const SmallButtonModal({super.key, required this.text});
+  final VoidCallback? onPressed;
+  const SmallButtonModal({super.key, required this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Call service to add new item here
-        Navigator.of(context).pop();
+        onPressed?.call();
       },
       borderRadius: BorderRadius.circular(50),
       child: Container(

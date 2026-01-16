@@ -13,8 +13,6 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     : _foodUsecase = foodUsecase,
       _typeUsecase = typeUsecase,
       super(MenuState()) {
-    // Register event handlers
-    // on<Name of Event>(corresponding handler function)
     on<MenuLoadedStarted>(_onMenuLoadedStarted);
     on<MenuFilterChanged>(_onMenuFilterChanged);
     on<MenuDeletedFoodItem>(deleteFood);

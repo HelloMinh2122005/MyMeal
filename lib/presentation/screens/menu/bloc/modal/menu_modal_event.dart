@@ -2,38 +2,50 @@ import 'package:image_picker/image_picker.dart';
 
 abstract class MenuModalEvent {}
 
-class LoadedModalStarted extends MenuModalEvent {
+class LoadedModalStartedEvent extends MenuModalEvent {
   final int? foodId;
 
-  LoadedModalStarted({this.foodId});
+  LoadedModalStartedEvent({this.foodId});
 }
 
-class MealTypeSelected extends MenuModalEvent {
+class MealTypeSelectedEvent extends MenuModalEvent {
   final int? typeId;
 
-  MealTypeSelected({this.typeId});
+  MealTypeSelectedEvent({this.typeId});
 }
 
-class ConfirmSelected extends MenuModalEvent {
-  int? id;
-  final String name;
-  final int typeId;
-
-  ConfirmSelected({this.id, required this.name, required this.typeId});
-
-  XFile? get itemImageFile => null;
-}
-
-class ClosedSelected extends MenuModalEvent {}
-
-class ModalSelectedMealTypeChanged extends MenuModalEvent {
-  final int? selectedMealTypeId;
-
-  ModalSelectedMealTypeChanged({this.selectedMealTypeId});
-}
-
-class ModalImageSelected extends MenuModalEvent {
+class ImageSelectedEvent extends MenuModalEvent {
   final XFile? imageFile;
 
-  ModalImageSelected({this.imageFile});
+  ImageSelectedEvent({this.imageFile});
+}
+
+class ImageRemovedEvent extends MenuModalEvent {}
+
+class ConfirmSelectedEvent extends MenuModalEvent {
+  int? id; // null if adding new item
+  final String name;
+  final int typeId;
+  final XFile? itemImageFile; // null if old image is kept
+
+  ConfirmSelectedEvent({
+    this.id,
+    required this.name,
+    required this.typeId,
+    this.itemImageFile,
+  });
+}
+
+class ModalSelectedMealTypeChangedEvent extends MenuModalEvent {
+  final int? selectedMealTypeId;
+
+  ModalSelectedMealTypeChangedEvent({this.selectedMealTypeId});
+}
+
+class ModalImageSelectedEvent extends MenuModalEvent {}
+
+class ModalItemNameChangedEvent extends MenuModalEvent {
+  final String itemName;
+
+  ModalItemNameChangedEvent({required this.itemName});
 }

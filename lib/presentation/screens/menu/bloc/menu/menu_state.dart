@@ -3,7 +3,6 @@ import 'package:my_flutter_app/application/entities/type_model.dart';
 import 'package:equatable/equatable.dart';
 
 class MenuState extends Equatable {
-  // State of food items
   final List<FoodModelItem> foods;
   final List<TypeModel> types;
   final bool isLoading;

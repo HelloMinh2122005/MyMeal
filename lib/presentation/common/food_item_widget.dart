@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_flutter_app/core/services/media_service.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/modal/menu_modal_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/widgets/update_modal.dart';
 import 'package:my_flutter_app/application/usecase/food_usecase.dart';
@@ -46,11 +47,19 @@ class FoodItemWidget extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        leading: Image.network(
+        leading: Image.asset(
           itemImageUrl,
           width: 60,
           height: 40,
           fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: 60,
+              height: 40,
+              color: Colors.grey[300],
+              child: Icon(Icons.broken_image, color: Colors.grey),
+            );
+          },
         ),
         title: Text(
           itemName,
@@ -86,6 +95,7 @@ class FoodItemWidget extends StatelessWidget {
                         create: (_) => MenuModalBloc(
                           foodUsecase: context.read<FoodUsecase>(),
                           typeUsecase: context.read<TypeUsecase>(),
+                          mediaService: context.read<MediaService>(),
                           itemId: itemId,
                         ),
                         child: Dialog(

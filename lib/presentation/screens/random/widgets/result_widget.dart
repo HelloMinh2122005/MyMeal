@@ -20,7 +20,7 @@ class ResultWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.network(imageUrl, width: 200, height: 140, fit: BoxFit.cover),
+          Image.asset(imageUrl, width: 200, height: 140, fit: BoxFit.cover),
           const SizedBox(height: 10),
           Text(
             name,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_flutter_app/application/entities/type_model.dart';
+import 'package:my_flutter_app/core/services/media_service.dart';
 import 'package:my_flutter_app/presentation/common/meal_type_widget.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_event.dart';
@@ -53,6 +54,7 @@ class _MenuScreenState extends State<MenuScreen> {
               create: (_) => MenuModalBloc(
                 foodUsecase: context.read<FoodUsecase>(),
                 typeUsecase: context.read<TypeUsecase>(),
+                mediaService: context.read<MediaService>(),
               ),
               child: Dialog(
                 shape: RoundedRectangleBorder(
