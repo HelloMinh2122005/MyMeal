@@ -13,7 +13,7 @@ class RandomBloc extends Bloc<RandomEvent, RandomState> {
     required TypeUsecase typeUsecase,
   }) : _foodUsecase = foodUsecase,
        _typeUsecase = typeUsecase,
-       super(const RandomState()) {
+       super(RandomInitialState()) {
     on<RandomLoadedStarted>(_onRandomLoadedStarted);
     on<RandomTypeSelected>(_onRandomTypeSelected);
     on<RandomFetchFood>(_onRandomFetchFood);
@@ -23,26 +23,15 @@ class RandomBloc extends Bloc<RandomEvent, RandomState> {
     RandomLoadedStarted event,
     Emitter<RandomState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    emit(RandomLoadingState());
 
     try {
-      final types = _typeUsecase.fetchAllTypes();
-      final foods = _foodUsecase.fetchAllFoodItems(null, null);
-      Future.wait([types, foods]);
-      emit(
-        state.copyWith(
-          types: await types,
-          foods: await foods,
-          isLoading: false,
-        ),
-      );
+      final types = await _typeUsecase.fetchAllTypes();
+      final foods = await _foodUsecase.fetchAllFoodItems(null, null);
+
+      emit(RandomLoadedState(types: types, foods: foods));
     } catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: 'Failed to load types: $e',
-        ),
-      );
+      emit(RandomErrorState(errorMessage: 'Failed to load data: $e'));
     }
   }
 
@@ -50,23 +39,27 @@ class RandomBloc extends Bloc<RandomEvent, RandomState> {
     RandomTypeSelected event,
     Emitter<RandomState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
-    try {
-      final foods = await _foodUsecase.fetchAllFoodItems(event.typeId, null);
-      emit(
-        state.copyWith(
-          foods: foods,
-          selectedTypeId: event.typeId,
-          isLoading: false,
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: 'Failed to load food items: $e',
-        ),
-      );
+    if (state is RandomLoadedState || state is RandomRolledState) {
+      // Capture current state data BEFORE emitting loading state
+      final types = state is RandomLoadedState
+          ? (state as RandomLoadedState).types
+          : (state as RandomRolledState).types;
+
+      emit(RandomLoadingState());
+
+      try {
+        final foods = await _foodUsecase.fetchAllFoodItems(event.typeId, null);
+
+        emit(
+          RandomLoadedState(
+            foods: foods,
+            types: types,
+            selectedTypeId: event.typeId,
+          ),
+        );
+      } catch (e) {
+        emit(RandomErrorState(errorMessage: 'Failed to load food items: $e'));
+      }
     }
   }
 
@@ -74,32 +67,52 @@ class RandomBloc extends Bloc<RandomEvent, RandomState> {
     RandomFetchFood event,
     Emitter<RandomState> emit,
   ) async {
-    emit(state.copyWith(isRolling: true, isRolled: false, errorMessage: null));
+    if (state is RandomLoadedState || state is RandomRolledState) {
+      // Capture state data before emitting rolling state
+      final foods = state is RandomLoadedState
+          ? (state as RandomLoadedState).foods
+          : (state as RandomRolledState).foods;
 
-    try {
-      if (state.foods.isNotEmpty) {
-        final randomFoodItem = await _foodUsecase.getRandomFoodItem(
-          event.typeId,
-        );
-        // Simulate rolling delay
-        await Future.delayed(const Duration(seconds: 3));
-        emit(
-          state.copyWith(
-            randomFoodItem: randomFoodItem,
-            isRolling: false,
-            isRolled: true,
-          ),
-        );
-      } else {
-        throw Exception('No food items available');
-      }
-    } catch (e) {
+      final types = state is RandomLoadedState
+          ? (state as RandomLoadedState).types
+          : (state as RandomRolledState).types;
+
+      final selectedTypeId = state is RandomLoadedState
+          ? (state as RandomLoadedState).selectedTypeId
+          : (state as RandomRolledState).selectedTypeId;
+
       emit(
-        state.copyWith(
-          isRolling: false,
-          errorMessage: 'Failed to get random food item: $e',
+        RandomRollingState(
+          foods: foods,
+          types: types,
+          selectedTypeId: selectedTypeId,
         ),
       );
+
+      try {
+        if (foods.isNotEmpty) {
+          final randomFoodItem = await _foodUsecase.getRandomFoodItem(
+            event.typeId,
+          );
+          // Simulate rolling delay
+          await Future.delayed(const Duration(seconds: 3));
+
+          emit(
+            RandomRolledState(
+              foods: foods,
+              types: types,
+              randomFoodItem: randomFoodItem!,
+              selectedTypeId: selectedTypeId,
+            ),
+          );
+        } else {
+          emit(RandomErrorState(errorMessage: 'No food items available'));
+        }
+      } catch (e) {
+        emit(
+          RandomErrorState(errorMessage: 'Failed to get random food item: $e'),
+        );
+      }
     }
   }
 }

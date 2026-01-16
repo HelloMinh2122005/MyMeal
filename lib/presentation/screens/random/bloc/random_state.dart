@@ -2,74 +2,70 @@ import 'package:equatable/equatable.dart';
 import 'package:my_flutter_app/application/entities/food_model_item.dart';
 import 'package:my_flutter_app/application/entities/type_model.dart';
 
-class RandomState extends Equatable {
-  final List<FoodModelItem> _foods;
-  final List<TypeModel> _types;
-  final FoodModelItem? _randomFoodItem;
-  final bool _isLoading;
-  final bool _isRolling;
-  final bool _isRolled;
-  final String? _errorMessage;
-  final int? _selectedTypeId;
+abstract class RandomState extends Equatable {}
 
-  List<FoodModelItem> get foods => _foods;
-  List<TypeModel> get types => _types;
-  FoodModelItem? get randomFoodItem => _randomFoodItem;
-  bool get isLoading => _isLoading;
-  bool get isRolling => _isRolling;
-  bool get isRolled => _isRolled;
-  String? get errorMessage => _errorMessage;
-  int? get selectedTypeId => _selectedTypeId;
+class RandomInitialState extends RandomState {
+  @override
+  List<Object?> get props => [];
+}
 
-  const RandomState({
-    List<FoodModelItem>? foods,
-    List<TypeModel>? types,
-    FoodModelItem? randomFoodItem,
-    bool? isLoading,
-    bool? isRolling,
-    bool? isRolled,
-    String? errorMessage,
-    int? selectedTypeId,
-  }) : _foods = foods ?? const [],
-       _types = types ?? const [],
-       _randomFoodItem = randomFoodItem,
-       _isLoading = isLoading ?? false,
-       _isRolling = isRolling ?? false,
-       _isRolled = isRolled ?? false,
-       _errorMessage = errorMessage,
-       _selectedTypeId = selectedTypeId;
+class RandomLoadingState extends RandomState {
+  @override
+  List<Object?> get props => [];
+}
 
-  RandomState copyWith({
-    List<FoodModelItem>? foods,
-    List<TypeModel>? types,
-    FoodModelItem? randomFoodItem,
-    bool? isLoading,
-    bool? isRolling,
-    bool? isRolled,
-    String? errorMessage,
-    int? selectedTypeId,
-  }) {
-    return RandomState(
-      foods: foods ?? _foods,
-      types: types ?? _types,
-      randomFoodItem: randomFoodItem ?? _randomFoodItem,
-      isLoading: isLoading ?? _isLoading,
-      isRolling: isRolling ?? _isRolling,
-      isRolled: isRolled ?? _isRolled,
-      errorMessage: errorMessage ?? _errorMessage,
-      selectedTypeId: selectedTypeId ?? _selectedTypeId,
-    );
-  }
+class RandomErrorState extends RandomState {
+  final String errorMessage;
+
+  RandomErrorState({required this.errorMessage});
 
   @override
-  List<Object?> get props => [
-    _foods,
-    _types,
-    _randomFoodItem,
-    _isLoading,
-    _isRolling,
-    _isRolled,
-    _errorMessage,
-    _selectedTypeId,
-  ];
+  List<Object?> get props => [errorMessage];
+}
+
+class RandomLoadedState extends RandomState {
+  final List<FoodModelItem> foods;
+  final List<TypeModel> types;
+  final int? selectedTypeId;
+
+  RandomLoadedState({
+    this.foods = const [],
+    this.types = const [],
+    this.selectedTypeId,
+  });
+
+  @override
+  List<Object?> get props => [foods, types, selectedTypeId];
+}
+
+class RandomRollingState extends RandomState {
+  final List<FoodModelItem> foods;
+  final List<TypeModel> types;
+  final int? selectedTypeId;
+
+  RandomRollingState({
+    required this.foods,
+    required this.types,
+    this.selectedTypeId,
+  });
+
+  @override
+  List<Object?> get props => [foods, types, selectedTypeId];
+}
+
+class RandomRolledState extends RandomState {
+  final List<FoodModelItem> foods;
+  final List<TypeModel> types;
+  final FoodModelItem randomFoodItem;
+  final int? selectedTypeId;
+
+  RandomRolledState({
+    required this.foods,
+    required this.types,
+    required this.randomFoodItem,
+    this.selectedTypeId,
+  });
+
+  @override
+  List<Object?> get props => [foods, types, randomFoodItem, selectedTypeId];
 }

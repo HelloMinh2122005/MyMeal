@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gif_view/gif_view.dart';
 import 'package:my_flutter_app/core/animations/bounding_images.dart';
 import 'package:my_flutter_app/core/styles/app_color.dart';
+import 'package:my_flutter_app/application/entities/food_model_item.dart';
 import 'package:my_flutter_app/application/entities/type_model.dart';
 import 'package:my_flutter_app/presentation/common/meal_type_widget.dart';
 import 'package:my_flutter_app/presentation/common/food_item_widget.dart';
@@ -30,6 +31,56 @@ class DiceWidgetState extends State<DiceWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<RandomBloc, RandomState>(
       builder: (context, state) {
+        // Show loading indicator
+        if (state is RandomLoadingState) {
+          return const Expanded(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        // Show error message
+        if (state is RandomErrorState) {
+          return Expanded(
+            child: Center(
+              child: Text(
+                'Error: ${state.errorMessage}',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+        }
+
+        // Get data from the current state
+        final foods = state is RandomLoadedState
+            ? state.foods
+            : state is RandomRollingState
+            ? state.foods
+            : state is RandomRolledState
+            ? state.foods
+            : <FoodModelItem>[];
+
+        final types = state is RandomLoadedState
+            ? state.types
+            : state is RandomRollingState
+            ? state.types
+            : state is RandomRolledState
+            ? state.types
+            : <TypeModel>[];
+
+        final selectedTypeId = state is RandomLoadedState
+            ? state.selectedTypeId
+            : state is RandomRollingState
+            ? state.selectedTypeId
+            : state is RandomRolledState
+            ? state.selectedTypeId
+            : null;
+
+        final isRolling = state is RandomRollingState;
+        final isRolled = state is RandomRolledState;
+        final randomFoodItem = state is RandomRolledState
+            ? state.randomFoodItem
+            : null;
+
         return Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -41,17 +92,17 @@ class DiceWidgetState extends State<DiceWidget> {
                     height: 50,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: state.types.length + 1,
+                      itemCount: types.length + 1,
                       itemBuilder: (context, index) {
                         final bool isAllOption = index == 0;
                         final TypeModel? item = isAllOption
                             ? null
-                            : state.types[index - 1];
+                            : types[index - 1];
                         final int? itemId = isAllOption ? null : item?.id;
                         final String itemName = isAllOption
                             ? "📋 Tất cả"
                             : item!.name;
-                        final bool isSelected = state.selectedTypeId == itemId;
+                        final bool isSelected = selectedTypeId == itemId;
 
                         return Padding(
                           padding: const EdgeInsets.only(right: 12),
@@ -75,7 +126,7 @@ class DiceWidgetState extends State<DiceWidget> {
                   GestureDetector(
                     onTap: () {
                       context.read<RandomBloc>().add(
-                        RandomFetchFood(typeId: state.selectedTypeId),
+                        RandomFetchFood(typeId: selectedTypeId),
                       );
                     },
                     child: Container(
@@ -109,7 +160,7 @@ class DiceWidgetState extends State<DiceWidget> {
                             ),
                           ],
                         ),
-                        child: state.isRolling
+                        child: isRolling
                             ? Center(
                                 child: GifView.asset(
                                   'assets/dice_rolling.gif',
@@ -118,10 +169,10 @@ class DiceWidgetState extends State<DiceWidget> {
                                   frameRate: 30,
                                 ),
                               )
-                            : state.isRolled
+                            : isRolled && randomFoodItem != null
                             ? ResultWidget(
-                                name: state.randomFoodItem!.name,
-                                imageUrl: state.randomFoodItem!.imageUrl,
+                                name: randomFoodItem.name,
+                                imageUrl: randomFoodItem.imageUrl,
                               )
                             : BoundingImages(
                                 assetUrl: 'assets/dice.png',
@@ -135,9 +186,9 @@ class DiceWidgetState extends State<DiceWidget> {
                   SizedBox(height: 20),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: state.foods.length,
+                      itemCount: foods.length,
                       itemBuilder: (context, index) {
-                        final item = state.foods[index];
+                        final item = foods[index];
                         return FoodItemWidget(
                           itemId: item.id,
                           itemName: item.name,
