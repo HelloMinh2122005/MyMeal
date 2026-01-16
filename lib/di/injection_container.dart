@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_app/application/repositories/interface_food_repository.dart';
+import 'package:my_flutter_app/application/repositories/interface_type_repository.dart';
 import 'package:my_flutter_app/domain/repositories/food_repository.dart';
 import 'package:my_flutter_app/domain/repositories/type_repository.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
@@ -14,17 +16,17 @@ List<SingleChildWidget> getProviders() {
   final mediaService = MediaServiceImpl();
 
   return [
-    // Create use case as singletons (they should be reused across the app)
-    Provider<FoodRepository>(create: (_) => FoodRepository()),
-    Provider<TypeRepository>(create: (_) => TypeRepository()),
+    // Register interfaces with concrete implementations
+    Provider<InterfaceFoodRepository>(create: (_) => FoodRepository()),
+    Provider<InterfaceTypeRepository>(create: (_) => TypeRepository()),
 
     Provider<FoodUsecase>(
       create: (context) =>
-          FoodUsecase(foodRepository: context.read<FoodRepository>()),
+          FoodUsecase(foodRepository: context.read<InterfaceFoodRepository>()),
     ),
     Provider<TypeUsecase>(
       create: (context) =>
-          TypeUsecase(typeRepository: context.read<TypeRepository>()),
+          TypeUsecase(typeRepository: context.read<InterfaceTypeRepository>()),
     ),
 
     Provider<MediaService>.value(value: mediaService),
