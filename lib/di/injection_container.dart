@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_app/domain/repositories/food_repository.dart';
+import 'package:my_flutter_app/domain/repositories/type_repository.dart';
 import 'package:my_flutter_app/presentation/screens/menu/bloc/menu/menu_bloc.dart';
 import 'package:my_flutter_app/presentation/screens/random/bloc/random_bloc.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +15,17 @@ List<SingleChildWidget> getProviders() {
 
   return [
     // Create use case as singletons (they should be reused across the app)
-    Provider<FoodUsecase>(create: (_) => FoodUsecase()),
-    Provider<TypeUsecase>(create: (_) => TypeUsecase()),
+    Provider<FoodRepository>(create: (_) => FoodRepository()),
+    Provider<TypeRepository>(create: (_) => TypeRepository()),
+
+    Provider<FoodUsecase>(
+      create: (context) =>
+          FoodUsecase(foodRepository: context.read<FoodRepository>()),
+    ),
+    Provider<TypeUsecase>(
+      create: (context) =>
+          TypeUsecase(typeRepository: context.read<TypeRepository>()),
+    ),
 
     Provider<MediaService>.value(value: mediaService),
 

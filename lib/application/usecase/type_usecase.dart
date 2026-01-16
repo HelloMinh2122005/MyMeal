@@ -1,38 +1,25 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
+import 'package:my_flutter_app/application/repositories/interface_type_repository.dart';
 
 import '../entities/type_model.dart';
 
 class TypeUsecase {
-  Future<List<TypeModel>> fetchAllTypes() async {
-    List<TypeModel> types = [];
-    final String response = await rootBundle.loadString(
-      'assets/mock_data.json',
-    );
-    final data = json.decode(response);
-    types = (data['meal_types'] as List)
-        .map((item) => TypeModel.fromJson(item))
-        .toList();
+  final InterfaceTypeRepository typeRepository;
 
-    return types;
+  TypeUsecase({required this.typeRepository});
+
+  Future<List<TypeModel>> fetchAllTypes() async {
+    try {
+      return await typeRepository.fetchAllTypes();
+    } catch (e) {
+      throw Exception('Failed to fetch types: $e');
+    }
   }
 
   Future<TypeModel> fetchTypeById(int id) async {
-    TypeModel typeModel;
-    final String response = await rootBundle.loadString(
-      'assets/mock_data.json',
-    );
-    final data = json.decode(response);
-    final item = (data['meal_types'] as List).firstWhere(
-      (item) => item['id'] == id,
-      orElse: () => null,
-    );
-    if (item != null) {
-      typeModel = TypeModel.fromJson(item);
-    } else {
-      throw Exception('Type not found');
+    try {
+      return await typeRepository.fetchTypeById(id);
+    } catch (e) {
+      throw Exception('Failed to fetch type by id: $e');
     }
-    return typeModel;
   }
 }
